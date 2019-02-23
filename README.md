@@ -39,6 +39,13 @@ UIWebView had a property called `scales_page_to_fit`, WKWebView does not. See be
 
 Looks like Pythonista has the specific plist entry required to allow fetching non-secure http urls. 
 
+### Cache and timeouts
+
+For remote (non-file) `load_url` requests, there are two additional options:
+  
+* Set `no_cache` to `True` to skip the local cache, default is `False`
+* Set `timeout` to a specific timeout value, default is 10 (seconds)
+
 ### Other url schemes
 
 If you try to open a url not natively supported by WKWebView, such as `tel:` for phone numbers, the `webbrowser` module is used to open it.

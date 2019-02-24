@@ -4,7 +4,7 @@ WKWebView implementation for Pythonista.
 
 The underlying component used to implement  ui.WebView in Pythonista is UIWebView, which has been deprecated since iOS 8. This module implements a Python webview API using the current iOS-provided view, WKWebView. Besides being Apple-supported, WKWebView brings other benefits such as better Javascript performance and an official communication channel from Javascript to Python. This implementation of a Python API also has the additional benefit of being inheritable.
 
-Available as a [single file](https://github.com/mikaelho/youey/blob/master/youey/wkwebview.py) on GitHub. Run the file as-is to try out some of the capabilities; check the end of the file for demo code.
+Available as a [single file](https://github.com/mikaelho/pythonista-webview) on GitHub. Run the file as-is to try out some of the capabilities; check the end of the file for demo code.
 
 Credits: This would not exist without @JonB and @mithrendal (Pythonista forum handles).
 
@@ -166,3 +166,4 @@ Javascript alert, confirm and prompt dialogs are now implemented with simple Pyt
         return console.input_alert(host, prompt, default_text, 'OK')
       except KeyboardInterrupt:
         return None
+

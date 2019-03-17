@@ -40,6 +40,7 @@ class WKWebView(ui.View):
 
   def __init__(self, swipe_navigation=False, data_detectors=NONE, log_js_evals=False, respect_safe_areas=False, **kwargs):
     
+  def __init__(self, swipe_navigation=False, allowsInlineMediaPlayback=True, data_detectors=NONE, log_js_evals=False, respect_safe_areas=False, **kwargs):
     WKWebView.webviews.append(self)
     self.delegate = None
     self.log_js_evals = log_js_evals
@@ -63,6 +64,8 @@ class WKWebView(ui.View):
     webview_config = WKWebView.WKWebViewConfiguration.new().autorelease()
     webview_config.userContentController = user_content_controller
     
+    webview_config.allowsInlineMediaPlayback = allowsInlineMediaPlayback
+    #webview_config.preferences().setValue_forKey_(True, "developerExtrasEnabled") #Normaly, allows the use of remote debugging with Safari web inspector, it should work but ... :o(
     data_detectors = sum(data_detectors) if type(data_detectors) is tuple else data_detectors
     
     # Must be set to True to get real js 

@@ -174,6 +174,14 @@ NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
 }];
     '''
     
+    WKWebsiteDataStore = ObjCClass('WKWebsiteDataStore')
+    websiteDataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+    dateFrom = ObjCClass('NSDate').dateWithTimeIntervalSince1970_(0)
+    defaultDataStore = WKWebsiteDataStore.defaultDataStore()
+    def myHandler():
+      pass
+    defaultDataStore.removeDataOfTypes_modifiedSince_completionHandler_(websiteDataTypes, dateFrom, myHandler)
+
   # Javascript evaluation completion handler
   
   def _handle_completion(callback, webview, _cmd, _obj, _err):

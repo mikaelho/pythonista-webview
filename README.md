@@ -46,6 +46,21 @@ For remote (non-file) `load_url` requests, there are two additional options:
 * Set `no_cache` to `True` to skip the local cache, default is `False`
 * Set `timeout` to a specific timeout value, default is 10 (seconds)
 
+You can also explicitly clear all data types from the default data store with the `clear_cache` instance method. The method takes an optional parameter, a plain function that will be called when the async cache clearing operation is finished:
+
+    def cleared():
+      print('Cache cleared')
+    
+    WKWebView().clear_cache(cleared)
+
+### Media playback
+
+Following media playback options are available as WKWebView constructor parameters:
+
+* `inline_media` - whether HTML5 videos play inline or use the native full-screen controller. The default value for iPhone is False and the default value for iPad is True.
+* `airplay_media` - whether AirPlay is allowed. The default value is True.
+* `pip_media` - whether HTML5 videos can play picture-in-picture. The default value is True.
+
 ### Other url schemes
 
 If you try to open a url not natively supported by WKWebView, such as `tel:` for phone numbers, the `webbrowser` module is used to open it.

@@ -12,11 +12,23 @@ from types import SimpleNamespace
 # Helpers for invoking ObjC function blocks with no return value
   
 class _block_descriptor (Structure):
-  _fields_ = [('reserved', c_ulong), ('size', c_ulong), ('copy_helper', c_void_p), ('dispose_helper', c_void_p), ('signature', c_char_p)]
+  _fields_ = [
+    ('reserved', c_ulong),
+    ('size', c_ulong),
+    ('copy_helper', c_void_p), 
+    ('dispose_helper', c_void_p), 
+    ('signature', c_char_p)
+  ]
   
 def _block_literal_fields(*arg_types):
-  return [('isa', c_void_p), ('flags', c_int), ('reserved', c_int), ('invoke', ctypes.CFUNCTYPE(c_void_p, c_void_p, *arg_types)), ('descriptor', _block_descriptor)]
-    
+  return [
+    ('isa', c_void_p),
+    ('flags', c_int),
+    ('reserved', c_int),
+    ('invoke', ctypes.CFUNCTYPE(c_void_p, c_void_p, *arg_types)),
+    ('descriptor', _block_descriptor)
+  ]
+
 
 class WKWebView(ui.View):
   
@@ -38,7 +50,15 @@ class WKWebView(ui.View):
     accessoryViewController().\
     consoleViewController()
 
-  def __init__(self, swipe_navigation=False, data_detectors=NONE, log_js_evals=False, respect_safe_areas=False, **kwargs):
+  def __init__(self,
+  swipe_navigation=False, 
+  data_detectors=NONE,
+  log_js_evals=False, 
+  respect_safe_areas=False,
+  inline_media=None,
+  airplay_media=True,
+  pip_media=True,
+  **kwargs):
     
     WKWebView.webviews.append(self)
     self.delegate = None
@@ -64,12 +84,17 @@ class WKWebView(ui.View):
     webview_config.userContentController = user_content_controller
     
     data_detectors = sum(data_detectors) if type(data_detectors) is tuple else data_detectors
+    webview_config.setDataDetectorTypes_(data_detectors)
     
     # Must be set to True to get real js 
     # errors, in combination with setting a
     # base directory in the case of load_html
     webview_config.preferences().setValue_forKey_(True, 'allowFileAccessFromFileURLs')
-    webview_config.setDataDetectorTypes_(data_detectors)
+    
+    if inline_media is not None:
+      webview_config.allowsInlineMediaPlayback = inline_media
+    webview_config.allowsAirPlayForMediaPlayback = airplay_media
+    webview_config.allowsPictureInPictureMediaPlayback = pip_media
     
     nav_delegate = WKWebView.CustomNavigationDelegate.new()
     retain_global(nav_delegate)
@@ -159,17 +184,14 @@ class WKWebView(ui.View):
     retain_global(block)
     self.webview.evaluateJavaScript_completionHandler_(js, block)
     
-  def clear_cache(self):
-    '''
-    //// All kinds of data
-//NSSet *websiteDataTypes = [WKWebsiteDataStore allWebsiteDataTypes];
-//// Date from
-NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
-//// Execute
-[[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
-   // Done
-}];
-    '''
+  def clear_cache(self, completion_handler=None):
+    store = WKWebView.WKWebsiteDataStore.defaultDataStore()
+    data_types = WKWebView.WKWebsiteDataStore.allWebsiteDataTypes()
+    from_start = WKWebView.NSDate.dateWithTimeIntervalSince1970_(0)
+    def dummy_completion_handler():
+      pass
+    store.removeDataOfTypes_modifiedSince_completionHandler_(
+      data_types, from_start, completion_handler or dummy_completion_handler)
     
   # Javascript evaluation completion handler
   
@@ -392,6 +414,8 @@ NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
   WKUserContentController = ObjCClass('WKUserContentController')
   NSURLRequest = ObjCClass('NSURLRequest')
   WKUserScript = ObjCClass('WKUserScript')
+  WKWebsiteDataStore = ObjCClass('WKWebsiteDataStore')
+  NSDate = ObjCClass('NSDate')
     
   # Navigation delegate
     
@@ -621,6 +645,7 @@ if __name__ == '__main__':
   r.present() # Use 'panel' if you want to view console in another tab
   
   #v.disable_all()
-  v.load_html(html)
-  #v.load_url('http://omz-software.com/pythonista/', no_cache=True, timeout=5)
+  #v.load_html(html)
+  v.load_url('http://omz-software.com/pythonista/', no_cache=False, timeout=5)
   #v.load_url('file://some/local/file.html')
+  v.clear_cache()

@@ -599,7 +599,7 @@ if __name__ == '__main__':
       
     @ui.in_background
     def webview_did_finish_load(self, webview):
-      print('Finished loading ' + webview.eval_js('document.title'))
+      print('Finished loading ' + str(webview.eval_js('document.title')))
 
       
   class MyWebView(WKWebView):

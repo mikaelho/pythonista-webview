@@ -363,28 +363,28 @@ class WKWebView(ui.View):
         except KeyboardInterrupt:
             return None
 
-    js_logging_script = 'console = new Object();'
-    'console.info = function(message) { '
-    ' window.webkit.messageHandlers.javascript_console_message.postMessage('
-    '  JSON.stringify({ level: "info", content: message})'
-    ' ); return false; };'
-    'console.log = function(message) { '
-    ' window.webkit.messageHandlers.javascript_console_message.postMessage('
-    '  JSON.stringify({ level: "log", content: message})'
-    ' ); return false; };'
-    'console.warn = function(message) { '
-    ' window.webkit.messageHandlers.javascript_console_message.postMessage('
-    '  JSON.stringify({ level: "warn", content: message})'
-    ' ); return false; };'
-    'console.error = function(message) {'
-    ' window.webkit.messageHandlers.javascript_console_message.postMessage('
-    '  JSON.stringify({ level: "error", content: message})'
-    ' ); return false; };'
-    'window.onerror = (function(error, url, line, col, errorobj) {'
-    ' console.error('
-    '  "" + error + " (" + url + ", line: " + line + ", column: " + col + ")"'
-    ' );'
-    '});'
+    js_logging_script = '''console = new Object();
+    console.info = function(message) { 
+     window.webkit.messageHandlers.javascript_console_message.postMessage(
+      JSON.stringify({ level: "info", content: message})
+     ); return false; };
+    console.log = function(message) { 
+     window.webkit.messageHandlers.javascript_console_message.postMessage(
+      JSON.stringify({ level: "log", content: message})
+     ); return false; };
+    console.warn = function(message) { 
+     window.webkit.messageHandlers.javascript_console_message.postMessage(
+      JSON.stringify({ level: "warn", content: message})
+     ); return false; };
+    console.error = function(message) {
+     window.webkit.messageHandlers.javascript_console_message.postMessage(
+      JSON.stringify({ level: "error", content: message})
+     ); return false; };
+    window.onerror = (function(error, url, line, col, errorobj) {
+     console.error(
+      "" + error + " (" + url + ", line: " + line + ", column: " + col + ")"
+     );
+    });'''
 
     def on_javascript_console_message(self, message):
         log_message = json.loads(message)
